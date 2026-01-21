@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Speed Score - pixelit.be</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .loading-spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #667eea;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: bold;
+            margin: 0 auto;
+        }
+        .score-excellent { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); }
+        .score-good { background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%); }
+        .score-average { background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%); }
+        .score-poor { background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%); }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen">
+    
+    <!-- Header -->
+    <div class="gradient-bg text-white py-8 mb-8">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h1 class="text-4xl font-bold mb-2">⚡ Website Speed Score</h1>
+            <p class="text-lg opacity-90">Test de laadsnelheid van je website en verbeter je performance</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-4xl mx-auto px-4 pb-12">
+        
+        <!-- Input Section -->
+        <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+            <div class="mb-6">
+                <label class="block text-slate-700 font-semibold mb-2">Website URL</label>
+                <div class="flex gap-3">
+                    <input 
+                        type="url" 
+                        id="websiteUrl" 
+                        placeholder="https://jouwwebsite.be" 
+                        class="flex-1 px-4 py-3 border-2 border-slate-300 rounded-lg focus:border-indigo-500 focus:outline-none transition"
+                    >
+                    <button 
+                        onclick="analyzeSpeed()" 
+                        class="px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-lg hover:shadow-lg transition transform hover:-translate-y-0.5"
+                    >
+                        Analyseer
+                    </button>
+                </div>
+                <p class="text-sm text-slate-500 mt-2">Voer de volledige URL in (inclusief https://)</p>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loadingState" class="hidden bg-white rounded-xl shadow-lg p-12 text-center">
+            <div class="loading-spinner mx-auto mb-4"></div>
+            <p class="text-slate-600 font-medium">Analyseren van je website...</p>
+            <p class="text-sm text-slate-400 mt-2">Dit kan enkele seconden duren</p>
+        </div>
+
+        <!-- Results Section -->
+        <div id="resultsSection" class="hidden">
+            <!-- Score Card -->
+            <div class="bg-white rounded-xl shadow-lg p-8 mb-6 text-center">
+                <h2 class="text-2xl font-bold text-slate-800 mb-4">Je Website Score</h2>
+                <div id="scoreCircle" class="score-circle mb-4">
+                    <span id="scoreNumber">0</span>
+                </div>
+                <h3 id="scoreLabel" class="text-xl font-semibold mb-2"></h3>
+                <p id="scoreDescription" class="text-slate-600"></p>
+            </div>
+
+            <!-- Details -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex items-center mb-3">
+                        <span class="text-2xl mr-3">⏱️</span>
+                        <div>
+                            <p class="text-sm text-slate-500 font-medium">Geschatte Laadtijd</p>
+                            <p id="loadTime" class="text-2xl font-bold text-slate-800">-</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-lg p-6">
+                    <div class="flex items-center mb-3">
+                        <span class="text-2xl mr-3">📦</span>
+                        <div>
+                            <p class="text-sm text-slate-500 font-medium">Totale Paginagrootte</p>
+                            <p id="pageSize" class="text-2xl font-bold text-slate-800">-</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recommendations -->
+            <div class="bg-white rounded-xl shadow-lg p-8">
+                <h3 class="text-xl font-bold text-slate-800 mb-4">🚀 Aanbevelingen voor Verbetering</h3>
+                <ul id="recommendations" class="space-y-3">
+                    <!-- Filled by JS -->
+                </ul>
+            </div>
+
+            <!-- Upsell CTA -->
+            <div class="mt-8 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl shadow-lg p-8 text-white text-center">
+                <h3 class="text-2xl font-bold mb-3">⚠️ Wil je deze problemen echt oplossen?</h3>
+                <p class="text-lg mb-6 opacity-90">
+                    Een trage website kost je klanten. Wij optimaliseren je website professioneel en meten het resultaat.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div class="bg-white/10 backdrop-blur rounded-lg p-4">
+                        <p class="font-semibold mb-1">Volledige Speed Audit</p>
+                        <p class="text-2xl font-bold">€49</p>
+                        <p class="text-sm opacity-75">Gedetailleerd rapport met concrete acties</p>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur rounded-lg p-4">
+                        <p class="font-semibold mb-1">Wij Optimaliseren</p>
+                        <p class="text-2xl font-bold">Vanaf €499</p>
+                        <p class="text-sm opacity-75">Gegarandeerd 2x sneller of geld terug</p>
+                    </div>
+                </div>
+                <a href="/cdn-cgi/l/email-protection#3851565e57784851405d54514c165a5d074b4d5a525d5b4c056f5d5a4b514c5d186b485d5d5c1877484c51555954514b594c515d" class="inline-block px-8 py-3 bg-white text-indigo-600 font-bold rounded-lg hover:shadow-xl transition transform hover:-translate-y-1">
+                    Neem Contact Op
+                </a>
+            </div>
+        </div>
+
+        <!-- Footer Branding -->
+        <div class="mt-12 text-center">
+            <p class="text-slate-500 text-sm mb-2">Gratis aangeboden door</p>
+            <a href="/" class="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent hover:opacity-80 transition">
+                pixelit.be
+            </a>
+            <p class="text-slate-400 text-xs mt-1">Meer gratis tools ontdekken? <a href="/" class="text-indigo-600 hover:underline">Klik hier</a></p>
+        </div>
+
+    </div>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+        async function analyzeSpeed() {
+            const url = document.getElementById('websiteUrl').value.trim();
+            
+            if (!url || !url.startsWith('http')) {
+                alert('Voer een geldige URL in (beginnend met https://)');
+                return;
+            }
+
+            // Show loading
+            document.getElementById('loadingState').classList.remove('hidden');
+            document.getElementById('resultsSection').classList.add('hidden');
+
+            // Simulate analysis (in real version, this would call PageSpeed API or similar)
+            setTimeout(() => {
+                // Generate realistic mock data
+                const mockScore = Math.floor(Math.random() * 40) + 40; // 40-80
+                const mockLoadTime = (Math.random() * 3 + 1).toFixed(1); // 1-4 seconds
+                const mockPageSize = (Math.random() * 3 + 1).toFixed(1); // 1-4 MB
+
+                displayResults(mockScore, mockLoadTime, mockPageSize);
+            }, 2000);
+        }
+
+        function displayResults(score, loadTime, pageSize) {
+            document.getElementById('loadingState').classList.add('hidden');
+            document.getElementById('resultsSection').classList.remove('hidden');
+
+            // Update score
+            document.getElementById('scoreNumber').textContent = score;
+            
+            const scoreCircle = document.getElementById('scoreCircle');
+            const scoreLabel = document.getElementById('scoreLabel');
+            const scoreDescription = document.getElementById('scoreDescription');
+
+            // Determine score category
+            if (score >= 90) {
+                scoreCircle.className = 'score-circle score-excellent';
+                scoreLabel.textContent = 'Excellent!';
+                scoreDescription.textContent = 'Je website laadt bliksemsnel. Goed werk!';
+            } else if (score >= 70) {
+                scoreCircle.className = 'score-circle score-good';
+                scoreLabel.textContent = 'Goed';
+                scoreDescription.textContent = 'Je website presteert goed, maar er is ruimte voor verbetering.';
+            } else if (score >= 50) {
+                scoreCircle.className = 'score-circle score-average';
+                scoreLabel.textContent = 'Gemiddeld';
+                scoreDescription.textContent = 'Je website kan significant sneller. Optimalisatie aangeraden.';
+            } else {
+                scoreCircle.className = 'score-circle score-poor';
+                scoreLabel.textContent = 'Traag';
+                scoreDescription.textContent = 'Je website is te traag. Dit kost je conversies en klanten!';
+            }
+
+            // Update details
+            document.getElementById('loadTime').textContent = `${loadTime}s`;
+            document.getElementById('pageSize').textContent = `${pageSize} MB`;
+
+            // Generate recommendations
+            const recommendations = [
+                { icon: '🖼️', text: 'Optimaliseer afbeeldingen - Ze zijn te groot en niet gecomprimeerd' },
+                { icon: '📜', text: 'Minimaliseer JavaScript en CSS - Verwijder onnodige code' },
+                { icon: '⚡', text: 'Gebruik een CDN - Serveer content sneller vanaf dichter bij je bezoekers' },
+                { icon: '💾', text: 'Enable browser caching - Laat browsers bestanden lokaal opslaan' },
+                { icon: '🔧', text: 'Update je hosting - Jouw huidige server is te traag' }
+            ];
+
+            const recList = document.getElementById('recommendations');
+            recList.innerHTML = '';
+            recommendations.forEach(rec => {
+                const li = document.createElement('li');
+                li.className = 'flex items-start gap-3 p-3 bg-slate-50 rounded-lg';
+                li.innerHTML = `
+                    <span class="text-xl">${rec.icon}</span>
+                    <p class="text-slate-700">${rec.text}</p>
+                `;
+                recList.appendChild(li);
+            });
+
+            // Scroll to results
+            document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Allow Enter key

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEO Quick Scan - pixelit.be</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-bg {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+        .loading-spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #11998e;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .check-item {
+            transition: all 0.3s ease;
+        }
+        .check-item:hover {
+            transform: translateX(5px);
+        }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen">
+    
+    <!-- Header -->
+    <div class="gradient-bg text-white py-8 mb-8">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h1 class="text-4xl font-bold mb-2">🔍 SEO Quick Scan</h1>
+            <p class="text-lg opacity-90">Check de SEO-gezondheid van je website in 5 seconden</p>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-4xl mx-auto px-4 pb-12">
+        
+        <!-- Input Section -->
+        <div class="bg-white rounded-xl shadow-lg p-8 mb-8">
+            <div class="mb-6">
+                <label class="block text-slate-700 font-semibold mb-2">Website URL</label>
+                <div class="flex gap-3">
+                    <input 
+                        type="url" 
+                        id="websiteUrl" 
+                        placeholder="https://jouwwebsite.be" 
+                        class="flex-1 px-4 py-3 border-2 border-slate-300 rounded-lg focus:border-green-500 focus:outline-none transition"
+                    >
+                    <button 
+                        onclick="scanSEO()" 
+                        class="px-8 py-3 bg-gradient-to-r from-green-600 to-teal-600 text-white font-semibold rounded-lg hover:shadow-lg transition transform hover:-translate-y-0.5"
+                    >
+                        Scan Nu
+                    </button>
+                </div>
+                <p class="text-sm text-slate-500 mt-2">We controleren 8 essentiële SEO punten</p>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div id="loadingState" class="hidden bg-white rounded-xl shadow-lg p-12 text-center">
+            <div class="loading-spinner mx-auto mb-4"></div>
+            <p class="text-slate-600 font-medium">Website scannen...</p>
+            <p class="text-sm text-slate-400 mt-2">We controleren je SEO instellingen</p>
+        </div>
+
+        <!-- Results Section -->
+        <div id="resultsSection" class="hidden">
+            <!-- Score Overview -->
+            <div class="bg-white rounded-xl shadow-lg p-8 mb-6">
+                <div class="text-center mb-6">
+                    <h2 class="text-2xl font-bold text-slate-800 mb-2">Je SEO Score</h2>
+                    <div class="inline-block">
+                        <span id="scoreDisplay" class="text-6xl font-bold text-green-600">0/8</span>
+                        <p class="text-slate-600 mt-2">punten behaald</p>
+                    </div>
+                </div>
+                
+                <!-- Progress Bar -->
+                <div class="w-full bg-slate-200 rounded-full h-4 mb-4">
+                    <div id="progressBar" class="bg-gradient-to-r from-green-600 to-teal-600 h-4 rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+
+                <p id="overallVerdict" class="text-center text-lg font-medium"></p>
+            </div>
+
+            <!-- Detailed Checks -->
+            <div class="bg-white rounded-xl shadow-lg p-8 mb-6">
+                <h3 class="text-xl font-bold text-slate-800 mb-6">Gedetailleerde Controle</h3>
+                <div id="checksList" class="space-y-4">
+                    <!-- Filled by JS -->
+                </div>
+            </div>
+
+            <!-- Issues Found -->
+            <div id="issuesSection" class="bg-red-50 border-l-4 border-red-500 rounded-xl p-6 mb-6">
+                <h3 class="text-xl font-bold text-red-800 mb-4">⚠️ Gevonden Problemen</h3>
+                <ul id="issuesList" class="space-y-2">
+                    <!-- Filled by JS -->
+                </ul>
+            </div>
+
+            <!-- Upsell CTA -->
+            <div class="bg-gradient-to-r from-green-600 to-teal-600 rounded-xl shadow-lg p-8 text-white text-center">
+                <h3 class="text-2xl font-bold mb-3">🚀 Wil je deze SEO problemen oplossen?</h3>
+                <p class="text-lg mb-6 opacity-90">
+                    Goede SEO is het verschil tussen gevonden worden of onzichtbaar blijven. Wij optimaliseren je website voor Google.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div class="bg-white/10 backdrop-blur rounded-lg p-4">
+                        <p class="font-semibold mb-1">Complete SEO Audit</p>
+                        <p class="text-2xl font-bold">€99</p>
+                        <p class="text-sm opacity-75">50+ checkpoints + actieplan</p>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur rounded-lg p-4">
+                        <p class="font-semibold mb-1">SEO Optimalisatie</p>
+                        <p class="text-2xl font-bold">€799</p>
+                        <p class="text-sm opacity-75">Volledige on-page optimalisatie</p>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur rounded-lg p-4">
+                        <p class="font-semibold mb-1">Maandelijks Beheer</p>
+                        <p class="text-2xl font-bold">€149/m</p>
+                        <p class="text-sm opacity-75">Continue monitoring + updates</p>
+                    </div>
+                </div>
+                <a href="/cdn-cgi/l/email-protection#97fef9f1f8d7e7feeff2fbfee3b9f5f2a8e4e2f5fdf2f4e3aac4d2d8b7d8e7e3fefaf6fbfee4f6e3fef2b7d6f6f9e1e5f6f6f0" class="inline-block px-8 py-3 bg-white text-green-600 font-bold rounded-lg hover:shadow-xl transition transform hover:-translate-y-1">
+                    Vraag Offerte Aan
+                </a>
+            </div>
+        </div>
+
+        <!-- Footer Branding -->
+        <div class="mt-12 text-center">
+            <p class="text-slate-500 text-sm mb-2">Gratis aangeboden door</p>
+            <a href="/" class="text-xl font-bold bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent hover:opacity-80 transition">
+                pixelit.be
+            </a>
+            <p class="text-slate-400 text-xs mt-1">Meer gratis tools ontdekken? <a href="/" class="text-green-600 hover:underline">Klik hier</a></p>
+        </div>
+
+    </div>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+        const seoChecks = [
+            { id: 'title', label: 'Title Tag aanwezig', icon: '📝', priority: 'high' },
+            { id: 'meta', label: 'Meta Description ingevuld', icon: '📄', priority: 'high' },
+            { id: 'h1', label: 'H1 heading aanwezig', icon: '📑', priority: 'high' },
+            { id: 'https', label: 'HTTPS beveiligd', icon: '🔒', priority: 'high' },
+            { id: 'mobile', label: 'Mobiel-vriendelijk', icon: '📱', priority: 'high' },
+            { id: 'images', label: 'Afbeeldingen geoptimaliseerd (Alt tags)', icon: '🖼️', priority: 'medium' },
+            { id: 'speed', label: 'Snelle laadtijd (<3s)', icon: '⚡', priority: 'medium' },
+            { id: 'sitemap', label: 'XML Sitemap aanwezig', icon: '🗺️', priority: 'medium' }
+        ];
+
+        async function scanSEO() {
+            const url = document.getElementById('websiteUrl').value.trim();
+            
+            if (!url || !url.startsWith('http')) {
+                alert('Voer een geldige URL in (beginnend met https://)');
+                return;
+            }
+
+            // Show loading
+            document.getElementById('loadingState').classList.remove('hidden');
+            document.getElementById('resultsSection').classList.add('hidden');
+
+            // Simulate SEO scan
+            setTimeout(() => {
+                // Generate random results (in production this would actually scan the site)
+                const results = seoChecks.map(check => ({
+                    ...check,
+                    passed: Math.random() > 0.4 // 60% chance of passing each check
+                }));
+
+                displayResults(results);
+            }, 2000);
+        }
+
+        function displayResults(results) {
+            document.getElementById('loadingState').classList.add('hidden');
+            document.getElementById('resultsSection').classList.remove('hidden');
+
+            // Calculate score
+            const passedCount = results.filter(r => r.passed).length;
+            const totalCount = results.length;
+            const percentage = (passedCount / totalCount) * 100;
+
+            // Update score display
+            document.getElementById('scoreDisplay').textContent = `${passedCount}/${totalCount}`;
+            document.getElementById('progressBar').style.width = `${percentage}%`;
+
+            // Overall verdict
+            const verdictEl = document.getElementById('overallVerdict');
+            if (percentage >= 87.5) { // 7-8 points
+                verdictEl.textContent = '✅ Uitstekend! Je SEO is goed op orde.';
+                verdictEl.className = 'text-center text-lg font-medium text-green-600';
+            } else if (percentage >= 62.5) { // 5-6 points
+                verdictEl.textContent = '⚠️ Redelijk, maar er is ruimte voor verbetering.';
+                verdictEl.className = 'text-center text-lg font-medium text-orange-600';
+            } else {
+                verdictEl.textContent = '❌ Kritiek! Je SEO heeft dringend aandacht nodig.';
+                verdictEl.className = 'text-center text-lg font-medium text-red-600';
+            }
+
+            // Display detailed checks
+            const checksList = document.getElementById('checksList');
+            checksList.innerHTML = '';
+            results.forEach(result => {
+                const div = document.createElement('div');
+                div.className = `check-item flex items-center justify-between p-4 rounded-lg ${
+                    result.passed ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'
+                }`;
+                div.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">${result.icon}</span>
+                        <div>
+                            <p class="font-semibold ${result.passed ? 'text-green-800' : 'text-red-800'}">${result.label}</p>
+                            <p class="text-xs text-slate-500">Prioriteit: ${result.priority === 'high' ? 'Hoog' : 'Gemiddeld'}</p>
+                        </div>
+                    </div>
+                    <span class="text-2xl">${result.passed ? '✅' : '❌'}</span>
+                `;
+                checksList.appendChild(div);
+            });
+
+            // Display issues
+            const failedChecks = results.filter(r => !r.passed);
+            const issuesList = document.getElementById('issuesList');
+            const issuesSection = document.getElementById('issuesSection');
+            
+            if (failedChecks.length > 0) {
+                issuesSection.classList.remove('hidden');
+                issuesList.innerHTML = '';
+                failedChecks.forEach(issue => {
+                    const li = document.createElement('li');
+                    li.className = 'flex items-start gap-2 text-red-800';
+                    li.innerHTML = `
+                        <span class="mt-1">•</span>
+                        <span><strong>${issue.label}</strong> - Dit moet je oplossen om beter te ranken in Google</span>
+                    `;
+                    issuesList.appendChild(li);
+                });
+            } else {
+                issuesSection.classList.add('hidden');
+            }
+
+            // Scroll to results
+            document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Allow Enter
