@@ -1,0 +1,11 @@
+{
+  "name": "pixelit-tools",
+  "version": "1.0.0",
+  "description": "Gratis tools voor ondernemers - pixelit.be toolkit",
+  "scripts": {
+    "start": "echo 'Static site - no build needed'"
+  },
+  "keywords": ["tools", "calculator", "seo", "gdpr", "speed", "profit"],
+  "author": "pixelit.be",
+  "license": "MIT"
+}

@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gratis Tools - pixelit.be</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            background: #0a0e27;
+            color: white;
+            min-height: 100vh;
+        }
+
+        .gradient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0f1933 100%);
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 4rem;
+            padding-top: 2rem;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 1rem;
+        }
+
+        .description {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.6);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .tool-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
+            border-color: rgba(102, 126, 234, 0.5);
+        }
+
+        .tool-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-free {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+
+        .badge-coming {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .badge-premium {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .tool-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .tool-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+
+        .tool-description {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .tool-cta {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .tool-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .tool-cta.disabled {
+            background: rgba(255, 255, 255, 0.1);
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .tool-cta.disabled:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .cta-section {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 3rem;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        .cta-section h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .cta-section p {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 2rem;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+        }
+
+        @media (max-width: 768px) {
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                margin-bottom: 2rem;
+            }
+
+            .logo {
+                font-size: 1.8rem;
+            }
+
+            .tagline {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="gradient-bg"></div>
+
+    <div class="container">
+        <div class="header">
+            <h1 class="logo">pixelit.be</h1>
+            <p class="tagline">Professionele Tools voor Slimme Ondernemers</p>
+            <p class="description">
+                Ontdek onze gratis tools om je bedrijf naar een hoger niveau te tillen. 
+                Van winstberekeningen tot website optimalisatie - alles wat je nodig hebt.
+            </p>
+        </div>
+
+        <h2 class="section-title">🎁 Gratis Tools</h2>
+        <div class="tools-grid">
+            <!-- Tool 1: Profit Checker -->
+            <div class="tool-card">
+                <span class="tool-badge badge-free">Gratis</span>
+                <div class="tool-icon">💰</div>
+                <h3 class="tool-title">Project Profit Checker</h3>
+                <p class="tool-description">
+                    Stop met gokken. Bereken of je vaste prijs winstgevend is en ontdek je minimale uurtarief.
+                </p>
+                <a href="profitchecker.html" class="tool-cta">Start Tool</a>
+            </div>
+
+            <!-- Tool 2: Website Speed Score -->
+            <div class="tool-card">
+                <span class="tool-badge badge-free">Gratis</span>
+                <div class="tool-icon">⚡</div>
+                <h3 class="tool-title">Website Speed Score</h3>
+                <p class="tool-description">
+                    Test de laadsnelheid van je website en ontdek hoe je performance kan verbeteren.
+                </p>
+                <a href="speed-checker.html" class="tool-cta">Analyseer Nu</a>
+            </div>
+
+            <!-- Tool 3: SEO Quick Scan -->
+            <div class="tool-card">
+                <span class="tool-badge badge-free">Gratis</span>
+                <div class="tool-icon">🔍</div>
+                <h3 class="tool-title">SEO Quick Scan</h3>
+                <p class="tool-description">
+                    Controleer de SEO-gezondheid van je website in 5 seconden. Eenvoudig en direct resultaat.
+                </p>
+                <a href="seo-scanner.html" class="tool-cta">Scan Website</a>
+            </div>
+
+            <!-- Tool 4: GDPR Privacy Check -->
+            <div class="tool-card">
+                <span class="tool-badge badge-free">Gratis</span>
+                <div class="tool-icon">🔒</div>
+                <h3 class="tool-title">GDPR Privacy Check</h3>
+                <p class="tool-description">
+                    Is je website GDPR-proof? Check het in 2 minuten met onze simpele privacy scan.
+                </p>
+                <a href="gdpr-checker.html" class="tool-cta">Check Privacy</a>
+            </div>
+
+            <!-- Tool 5: Domain Name Generator -->
+            <div class="tool-card">
+                <span class="tool-badge badge-coming">Binnenkort</span>
+                <div class="tool-icon">🌐</div>
+                <h3 class="tool-title">Domain Name Generator</h3>
+                <p class="tool-description">
+                    Vind de perfecte domeinnaam voor je bedrijf met AI-powered suggesties en beschikbaarheidscheck.
+                </p>
+                <button class="tool-cta disabled" disabled>Binnenkort</button>
+            </div>
+
+            <!-- Tool 6: Image Optimizer -->
+            <div class="tool-card">
+                <span class="tool-badge badge-coming">Binnenkort</span>
+                <div class="tool-icon">🖼️</div>
+                <h3 class="tool-title">Image Size Optimizer</h3>
+                <p class="tool-description">
+                    Comprimeer je afbeeldingen zonder kwaliteitsverlies. Upload en download geoptimaliseerde files.
+                </p>
+                <button class="tool-cta disabled" disabled>Binnenkort</button>
+            </div>
+
+            <!-- Tool 7: Password Strength Meter -->
+            <div class="tool-card">
+                <span class="tool-badge badge-coming">Binnenkort</span>
+                <div class="tool-icon">🔐</div>
+                <h3 class="tool-title">Wachtwoord Sterkte Meter</h3>
+                <p class="tool-description">
+                    Test hoe sterk je wachtwoorden zijn en krijg tips voor betere beveiliging.
+                </p>
+                <button class="tool-cta disabled" disabled>Binnenkort</button>
+            </div>
+
+            <!-- Tool 8: Hosting Cost Calculator -->
+            <div class="tool-card">
+                <span class="tool-badge badge-coming">Binnenkort</span>
+                <div class="tool-icon">💻</div>
+                <h3 class="tool-title">Hosting Cost Calculator</h3>
+                <p class="tool-description">
+                    Bereken wat je echt nodig hebt voor hosting en vergelijk kosten tussen providers.
+                </p>
+                <button class="tool-cta disabled" disabled>Binnenkort</button>
+            </div>
+        </div>
+
+        <div class="cta-section">
+            <h2>Heb je een custom tool nodig?</h2>
+            <p>
+                We bouwen op maat gemaakte tools en automatisaties voor jouw bedrijf. 
+                Van calculators tot volledige workflows - wij maken het mogelijk.
+            </p>
+            <a href="/cdn-cgi/l/email-protection#8ce5e2eae3ccfce5f4e9e0e5f8a2eee9" class="cta-button">Neem Contact Op</a>
+   
