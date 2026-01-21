@@ -22,8 +22,7 @@
             <p class="text-slate-500">Stop met gokken. Bereken of je vaste prijs winstgevend is.</p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">            
             <div class="bg-white rounded-xl shadow-lg p-6 border-l-4 border-blue-500">
                 <h2 class="text-xl font-bold mb-4 flex items-center text-blue-900">
                     <span class="bg-blue-100 text-blue-600 rounded-full w-8 h-8 flex items-center justify-center mr-3 text-sm">1</span>
@@ -117,7 +116,6 @@
             <div id="statusBar" class="h-3 w-full bg-slate-300"></div>
         </div>
 
-        <!-- Upsell CTA Section -->
         <div class="mt-12 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl shadow-xl p-8 text-white text-center">
             <h3 class="text-2xl font-bold mb-3">💡 Blijkt dat je onder je kostprijs werkt?</h3>
             <p class="text-lg mb-6 opacity-90">
@@ -141,15 +139,15 @@
                     <p class="text-sm opacity-75">Volledig geautomatiseerd</p>
                 </div>
             </div>
-            <a href="/cdn-cgi/l/email-protection#60090e060f20100918050c09144e02055f1315020a0503145d290e1405120513130540090e403012050d09150d4030120f06091440340f0f0c13" class="inline-block px-8 py-3 bg-white text-blue-600 font-bold rounded-lg hover:shadow-xl transition transform hover:-translate-y-1">
+            <a href="mailto:info@pixelit.be" class="inline-block px-8 py-3 bg-white text-blue-600 font-bold rounded-lg hover:shadow-xl transition transform hover:-translate-y-1">
                 Ik wil meer weten
             </a>
         </div>
 
-        <!-- Email Capture Section -->
         <div class="mt-8 bg-white rounded-xl shadow-lg p-8 text-center">
             <h3 class="text-xl font-bold text-slate-800 mb-2">📬 Wil je meer gratis tools?</h3>
             <p class="text-slate-600 mb-4">Ontvang updates wanneer we nieuwe calculators en tools lanceren</p>
+            
             <form id="leadForm" class="flex flex-col md:flex-row gap-3 max-w-md mx-auto">
                 <input 
                     type="email" 
@@ -169,7 +167,6 @@
             <p id="emailSuccess" class="hidden text-green-600 font-semibold mt-3">✅ Bedankt! We houden je op de hoogte.</p>
         </div>
 
-        <!-- Footer Branding -->
         <div class="mt-12 text-center pb-8">
             <p class="text-slate-500 text-sm mb-2">Gratis aangeboden door</p>
             <a href="/" class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent hover:opacity-80 transition">
@@ -181,7 +178,7 @@
 
     </div>
 
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    <script>
         // Selecteer alle inputs
         const inputs = document.querySelectorAll('input[type="number"]');
         
@@ -269,14 +266,15 @@
                 statusBar.className = "h-3 w-full bg-slate-300";
             }
         }
+    </script>
 
-<script>
+    <script>
         document.addEventListener('DOMContentLoaded', () => {
             // We zoeken het formulier op ID
             const form = document.getElementById('leadForm');
             
             if (!form) {
-                console.error("KAN FORMULIER NIET VINDEN! Check of je id='leadForm' hebt toegevoegd aan de <form> tag.");
+                console.error("KAN FORMULIER NIET VINDEN!");
                 return;
             }
 
@@ -284,8 +282,7 @@
             form.addEventListener('submit', async function(e) {
                 // HIER STOPPEN WE DE REFRESH KEIHARD
                 e.preventDefault(); 
-                console.log("Submit onderschept! Refresh gestopt.");
-
+                
                 const submitBtn = form.querySelector('button');
                 const emailInput = document.getElementById('emailInput');
                 const originalBtnText = submitBtn.innerText;
@@ -310,7 +307,7 @@
                         },
                         body: JSON.stringify({
                             email: emailInput.value,
-                            tool_name: 'profit-checker', // Zorg dat dit overeenkomt met je database constraint
+                            tool_name: 'profit-checker',
                             data: { 
                                 date: new Date().toISOString(),
                                 url: window.location.href 
@@ -324,7 +321,6 @@
                     }
 
                     // SUCCES
-                    console.log("Opgeslagen in Supabase!");
                     document.getElementById('emailSuccess').classList.remove('hidden');
                     emailInput.value = ''; 
                     
