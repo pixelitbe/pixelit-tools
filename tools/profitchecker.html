@@ -270,14 +270,64 @@
             }
         }
 
-        function handleEmailSubmit(event) {
-            event.preventDefault();
-            const email = document.getElementById('emailInput').value;
-            
-            // Here you would normally send to your email service
-            // For now, just show success message
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+    // 2. CONFIGURATIE (Vul hier jouw echte gegevens in!)
+    const supabaseUrl = 'https://jouw-project-id.supabase.co'; 
+    const supabaseKey = 'jouw-public-anon-key';
+    
+    // Maak de verbinding
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+    // 3. DE FUNCTIE
+    async function handleEmailSubmit(event) {
+        event.preventDefault();
+        
+        const emailInput = document.getElementById('emailInput');
+        const email = emailInput.value;
+        
+        // We zoeken de knop binnen het formulier om hem even uit te zetten
+        const submitBtn = event.target.querySelector('button'); 
+
+        // UX: Laat zien dat we bezig zijn
+        const originalBtnText = submitBtn.innerText;
+        submitBtn.innerText = 'Opslaan...';
+        submitBtn.disabled = true;
+
+        try {
+            // A. Verstuur data naar Supabase
+            const { data, error } = await supabase
+                .from('leads')
+                .insert([
+                    { 
+                        email: email, 
+                        tool_name: 'profit-checker', // Pas aan per tool
+                        data: { 
+                            date: new Date().toISOString() 
+                        } 
+                    }
+                ]);
+
+            if (error) throw error; 
+
+            // B. SUCCES: Toon het bericht
             document.getElementById('emailSuccess').classList.remove('hidden');
-            document.getElementById('emailInput').value = '';
-            
+            emailInput.value = ''; 
+
+            // Verberg succesbericht na 5 seconden (optioneel)
             setTimeout(() => {
-           
+                 document.getElementById('emailSuccess').classList.add('hidden');
+            }, 5000);
+
+        } catch (error) {
+            // C. FOUT
+            console.error('Supabase error:', error);
+            alert('Kon niet opslaan. Controleer je connectie.');
+        } finally {
+            // D. RESET DE KNOP (altijd uitvoeren)
+            submitBtn.innerText = originalBtnText;
+            submitBtn.disabled = false;
+        }
+    }
+</script>
