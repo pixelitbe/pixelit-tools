@@ -270,64 +270,55 @@
             }
         }
 
-</script>
-    
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script>
-        // CONFIGURATIE (Jouw gegevens)
-        const supabaseUrl = 'https://oljhvvrbgcbjxfvrzoop.supabase.co'; 
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9samh2dnJiZ2NianhmdnJ6b29wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MDk1NzksImV4cCI6MjA4NDQ4NTU3OX0.ITh_BQsW_O7xTxWMbwgvtwza6eaUOHZs03h02HsFD6c';
-        
-        // Maak de verbinding
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-
-        // DE FUNCTIE
+        // 2. We definiëren EERST de functie, zodat de knop altijd werkt
         async function handleEmailSubmit(event) {
-            event.preventDefault();
+            // STOP DE REFRESH METEEN
+            event.preventDefault(); 
             
+            const submitBtn = event.target.querySelector('button');
             const emailInput = document.getElementById('emailInput');
-            const email = emailInput.value;
-            
-            // We zoeken de knop binnen het formulier om hem even uit te zetten
-            const submitBtn = event.target.querySelector('button'); 
-
-            // UX: Laat zien dat we bezig zijn
             const originalBtnText = submitBtn.innerText;
-            submitBtn.innerText = 'Opslaan...';
-            submitBtn.disabled = true;
 
             try {
-                // A. Verstuur data naar Supabase
+                // UI Feedback
+                submitBtn.innerText = 'Bezig...';
+                submitBtn.disabled = true;
+
+                // 3. Nu pas Supabase activeren (binnen de klik-actie)
+                // Dit voorkomt dat de site crasht als Supabase even niet laadt
+                if (!window.supabase) {
+                    throw new Error("Supabase bibliotheek is niet geladen (check adblocker?)");
+                }
+
+                const supabaseUrl = 'https://oljhvvrbgcbjxfvrzoop.supabase.co'; 
+                const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9samh2dnJiZ2NianhmdnJ6b29wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MDk1NzksImV4cCI6MjA4NDQ4NTU3OX0.ITh_BQsW_O7xTxWMbwgvtwza6eaUOHZs03h02HsFD6c';
+                const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+                // Data versturen
                 const { data, error } = await supabase
                     .from('leads')
                     .insert([
                         { 
-                            email: email, 
+                            email: emailInput.value, 
                             tool_name: 'profit-checker',
-                            data: { 
-                                date: new Date().toISOString() 
-                            } 
+                            data: { date: new Date().toISOString() } 
                         }
                     ]);
 
                 if (error) throw error; 
 
-                // B. SUCCES: Toon het bericht
+                // Succes!
                 document.getElementById('emailSuccess').classList.remove('hidden');
                 emailInput.value = ''; 
-
-                // Verberg succesbericht na 5 seconden
-                setTimeout(() => {
-                     document.getElementById('emailSuccess').classList.add('hidden');
-                }, 5000);
+                setTimeout(() => document.getElementById('emailSuccess').classList.add('hidden'), 5000);
 
             } catch (error) {
-                // C. FOUT
-                console.error('Supabase error:', error);
-                alert('Kon niet opslaan. Controleer je connectie.');
+                console.error('Foutmelding:', error);
+                alert('Er ging iets mis: ' + (error.message || error));
             } finally {
-                // D. RESET DE KNOP
                 submitBtn.innerText = originalBtnText;
                 submitBtn.disabled = false;
             }
