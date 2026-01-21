@@ -150,7 +150,7 @@
         <div class="mt-8 bg-white rounded-xl shadow-lg p-8 text-center">
             <h3 class="text-xl font-bold text-slate-800 mb-2">📬 Wil je meer gratis tools?</h3>
             <p class="text-slate-600 mb-4">Ontvang updates wanneer we nieuwe calculators en tools lanceren</p>
-            <form class="flex flex-col md:flex-row gap-3 max-w-md mx-auto" onsubmit="handleEmailSubmit(event)">
+            <form id="leadForm" class="flex flex-col md:flex-row gap-3 max-w-md mx-auto">
                 <input 
                     type="email" 
                     id="emailInput"
@@ -271,69 +271,76 @@
         }
 
 <script>
-        // CONFIGURATIE
-        const TOOL_ID = 'profit-checker'; 
-        
-        // Jouw Supabase gegevens (Directe REST API toegang)
-        const PROJECT_URL = 'https://oljhvvrbgcbjxfvrzoop.supabase.co'; 
-        const API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9samh2dnJiZ2NianhmdnJ6b29wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MDk1NzksImV4cCI6MjA4NDQ4NTU3OX0.ITh_BQsW_O7xTxWMbwgvtwza6eaUOHZs03h02HsFD6c';
-
-        async function handleEmailSubmit(event) {
-            // 1. STOP DE REFRESH
-            event.preventDefault(); 
+        document.addEventListener('DOMContentLoaded', () => {
+            // We zoeken het formulier op ID
+            const form = document.getElementById('leadForm');
             
-            const submitBtn = event.target.querySelector('button');
-            const emailInput = document.getElementById('emailInput');
-            const originalBtnText = submitBtn.innerText;
-
-            // UI Feedback
-            submitBtn.innerText = 'Opslaan...';
-            submitBtn.disabled = true;
-
-            try {
-                // 2. We gebruiken 'fetch' (standaard browser functie)
-                // Dit omzeilt adblockers omdat we geen tracking-script inladen.
-                const response = await fetch(`${PROJECT_URL}/rest/v1/leads`, {
-                    method: 'POST',
-                    headers: {
-                        'apikey': API_KEY,
-                        'Authorization': `Bearer ${API_KEY}`,
-                        'Content-Type': 'application/json',
-                        'Prefer': 'return=minimal' // Zorgt voor snellere respons
-                    },
-                    body: JSON.stringify({
-                        email: emailInput.value,
-                        tool_name: TOOL_ID,
-                        data: { 
-                            date: new Date().toISOString(),
-                            url: window.location.href 
-                        }
-                    })
-                });
-
-                // Check of het gelukt is (status codes 200-299 zijn goed)
-                if (!response.ok) {
-                    throw new Error(`Fout bij opslaan: ${response.status}`);
-                }
-
-                // 3. SUCCES
-                document.getElementById('emailSuccess').classList.remove('hidden');
-                emailInput.value = ''; 
-                
-                // Verberg succesbericht na 5 seconden
-                setTimeout(() => {
-                     document.getElementById('emailSuccess').classList.add('hidden');
-                }, 5000);
-
-            } catch (error) {
-                console.error('API Error:', error);
-                alert('Kon niet opslaan. Probeer het later opnieuw.');
-            } finally {
-                // 4. RESET DE KNOP
-                submitBtn.innerText = originalBtnText;
-                submitBtn.disabled = false;
+            if (!form) {
+                console.error("KAN FORMULIER NIET VINDEN! Check of je id='leadForm' hebt toegevoegd aan de <form> tag.");
+                return;
             }
-        }
+
+            // We luisteren naar de 'submit' actie
+            form.addEventListener('submit', async function(e) {
+                // HIER STOPPEN WE DE REFRESH KEIHARD
+                e.preventDefault(); 
+                console.log("Submit onderschept! Refresh gestopt.");
+
+                const submitBtn = form.querySelector('button');
+                const emailInput = document.getElementById('emailInput');
+                const originalBtnText = submitBtn.innerText;
+
+                // UI Feedback
+                submitBtn.innerText = 'Opslaan...';
+                submitBtn.disabled = true;
+
+                // Configuratie
+                const PROJECT_URL = 'https://oljhvvrbgcbjxfvrzoop.supabase.co'; 
+                const API_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9samh2dnJiZ2NianhmdnJ6b29wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg5MDk1NzksImV4cCI6MjA4NDQ4NTU3OX0.ITh_BQsW_O7xTxWMbwgvtwza6eaUOHZs03h02HsFD6c';
+
+                try {
+                    // Verstuur data via fetch (zonder bibliotheek)
+                    const response = await fetch(`${PROJECT_URL}/rest/v1/leads`, {
+                        method: 'POST',
+                        headers: {
+                            'apikey': API_KEY,
+                            'Authorization': `Bearer ${API_KEY}`,
+                            'Content-Type': 'application/json',
+                            'Prefer': 'return=minimal'
+                        },
+                        body: JSON.stringify({
+                            email: emailInput.value,
+                            tool_name: 'profit-checker', // Zorg dat dit overeenkomt met je database constraint
+                            data: { 
+                                date: new Date().toISOString(),
+                                url: window.location.href 
+                            }
+                        })
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.message || 'Server error');
+                    }
+
+                    // SUCCES
+                    console.log("Opgeslagen in Supabase!");
+                    document.getElementById('emailSuccess').classList.remove('hidden');
+                    emailInput.value = ''; 
+                    
+                    setTimeout(() => {
+                        document.getElementById('emailSuccess').classList.add('hidden');
+                    }, 5000);
+
+                } catch (error) {
+                    console.error('Fout bij opslaan:', error);
+                    alert('Kon niet opslaan: ' + error.message);
+                } finally {
+                    submitBtn.innerText = originalBtnText;
+                    submitBtn.disabled = false;
+                }
+            });
+        });
     </script>
 </body>
 </html>
