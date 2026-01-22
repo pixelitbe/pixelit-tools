@@ -275,9 +275,3 @@ Update form `action` attributes in tool HTML bestanden.
 **Website:** pixelit.be  
 **Email:** info@pixelit.be  
 **Dashboard:** dashboard.pixelit.be
-
----
-
-**🎉 Je tools platform is klaar!**
-
-*Built with ❤️ by Claude for pixelit.be*
